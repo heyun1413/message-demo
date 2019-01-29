@@ -1,7 +1,6 @@
 package pub.ron.messagedemo;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
-import org.apache.activemq.command.ActiveMQMessage;
 import org.apache.activemq.command.ActiveMQQueue;
 import org.apache.activemq.command.ActiveMQTopic;
 import org.springframework.boot.SpringApplication;
@@ -11,6 +10,7 @@ import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.support.converter.MappingJackson2MessageConverter;
 import org.springframework.jms.support.converter.MessageConverter;
 import org.springframework.jms.support.converter.MessageType;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import javax.jms.ConnectionFactory;
 import java.util.HashMap;
@@ -52,9 +52,9 @@ public class MessageDemoApplication {
         converter.setTypeIdMappings(typeIdMap);
         // 设置发送到队列中的typeId的名称
         converter.setTypeIdPropertyName("Alert");
-
         return converter;
     }
+
 
     @Bean
     JmsTemplate jmsTemplate(ConnectionFactory connectionFactory,
@@ -62,6 +62,14 @@ public class MessageDemoApplication {
         JmsTemplate jmsTemplate = new JmsTemplate(connectionFactory);
         jmsTemplate.setMessageConverter(messageConverter);
         return jmsTemplate;
+    }
+
+    @Bean
+    JavaMailSenderImpl javaMailSender() {
+        JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
+        javaMailSender.setHost("smtp.qq.com");
+        javaMailSender.setPort(587);
+        return javaMailSender;
     }
 
 
